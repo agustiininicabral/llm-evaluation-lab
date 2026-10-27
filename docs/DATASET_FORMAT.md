@@ -42,4 +42,4 @@ Safety evaluation does not call a model. Supply captured outputs from your own t
 
 ## Reproducibility
 
-Use the same dataset version, retrieval depth, normalization behavior, and metric definitions when comparing runs. The baseline file in examples is illustrative; regenerate it from a real current report before relying on regression thresholds.
+Use the same dataset version, retrieval depth, normalization behavior, and metric definitions when comparing runs. The comparison gate assumes every metric is higher-is-better and uses an absolute delta threshold; do not include lower-is-better metrics without transforming or separately handling them. Reports must contain finite numeric aggregate values. The baseline file in examples is illustrative; regenerate it from a real current report before relying on regression thresholds.
