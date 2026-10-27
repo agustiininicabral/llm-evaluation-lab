@@ -91,3 +91,39 @@ def test_comparison_rejects_extremely_large_integer_values():
 def test_comparison_rejects_extremely_large_integer_threshold():
     with pytest.raises(ValueError, match="max_regression"):
         compare_reports({"aggregate": {}}, {"aggregate": {}}, max_regression=10**1000)
+
+
+
+def test_comparison_rejects_dataset_fingerprint_mismatch():
+    current = {
+        "aggregate": {"mrr": 0.9},
+        "run_metadata": {"dataset_sha256": "current", "mode": "offline_rag_evaluation", "retrieval_k": 5},
+    }
+    baseline = {
+        "aggregate": {"mrr": 0.9},
+        "run_metadata": {"dataset_sha256": "baseline", "mode": "offline_rag_evaluation", "retrieval_k": 5},
+    }
+    with pytest.raises(ValueError, match="dataset_sha256"):
+        compare_reports(current, baseline)
+
+
+def test_comparison_rejects_retrieval_depth_mismatch():
+    current = {
+        "aggregate": {"mrr": 0.9},
+        "run_metadata": {"dataset_sha256": "same", "mode": "offline_rag_evaluation", "retrieval_k": 3},
+    }
+    baseline = {
+        "aggregate": {"mrr": 0.9},
+        "run_metadata": {"dataset_sha256": "same", "mode": "offline_rag_evaluation", "retrieval_k": 5},
+    }
+    with pytest.raises(ValueError, match="retrieval_k"):
+        compare_reports(current, baseline)
+
+
+def test_comparison_warns_when_legacy_report_lacks_provenance():
+    result = compare_reports(
+        {"aggregate": {"mrr": 0.9}},
+        {"aggregate": {"mrr": 0.9}},
+    )
+    assert result["passed"] is True
+    assert result["provenance_warnings"]
