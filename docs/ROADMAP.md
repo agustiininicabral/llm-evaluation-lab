@@ -10,6 +10,7 @@
 - [x] Baseline comparison with configurable absolute regression threshold
 - [x] Input validation and CLI exit codes
 - [x] Unit tests and GitHub Actions matrix
+- [x] Defensive validation for malformed comparison reports and safety patterns
 
 ## Next milestones
 
