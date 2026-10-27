@@ -24,7 +24,7 @@ Requires Python 3.10+.
     python -m pytest
     ruff check .
 
-Run safety fixtures with `llm-eval safety examples/safety_cases.json --out-dir reports`. Compare reports with `llm-eval compare reports/report.json examples/baseline.json --max-regression 0.05`.
+Run safety fixtures with `llm-eval safety examples/safety_cases.json --out-dir reports`. Compare reports with `llm-eval compare reports/report.json examples/baseline.json --max-regression 0.05`. The bundled baseline is illustrative and may intentionally fail comparison; generate a baseline from a trusted report using the same dataset and settings before treating the exit code as a release gate.
 
 See docs/DATASET_FORMAT.md for the JSON schema. The core makes no network calls and does not invoke a model.
 
