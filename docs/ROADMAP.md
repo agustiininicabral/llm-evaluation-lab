@@ -12,9 +12,13 @@
 - [x] Unit tests and GitHub Actions matrix
 - [x] Defensive validation for malformed comparison reports and safety patterns
 
+## Progress update
+
+- [x] Add offline adapters for captured generic text, OpenAI-compatible chat-completion, and Anthropic message outputs. These normalize recorded responses; they do not call providers or imply semantic correctness.
+
 ## Next milestones
 
-1. **Adapters:** define a stable interface for importing outputs from local inference servers and hosted providers without making either mandatory.
+1. **Live adapters:** optionally add bounded provider/local-server clients behind an explicit opt-in interface, without making credentials, network access, or a model mandatory.
 2. **Dataset quality:** add schema versioning, dataset metadata, and optional stratified summaries.
 3. **Semantic evaluation:** add a pluggable judge interface with calibration examples, reproducibility metadata, and cost/time limits.
 4. **Security coverage:** add application-level integration hooks and adversarial suites; keep phrase-based checks explicitly labeled as heuristics.
