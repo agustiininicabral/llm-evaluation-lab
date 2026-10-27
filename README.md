@@ -9,7 +9,7 @@ An offline-first evaluation toolkit for retrieval-augmented generation (RAG) and
 - Transparent lexical evidence-overlap and citation-presence signals.
 - Phrase-based safety regression checks for recorded responses.
 - Baseline comparison gates and JSON/Markdown reports.
-- Pytest, Ruff and GitHub Actions CI.
+- Pytest, Ruff and GitHub Actions CI, with sample reports published as workflow artifacts.
 
 Important: lexical and rule-based checks are regression signals, not proof of factual correctness or security. Semantic judgment requires human review and/or a separately configured evaluator.
 
