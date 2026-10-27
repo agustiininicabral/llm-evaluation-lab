@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "case_count": 3,
+  "aggregate": {
+    "exact_match": 1.0,
+    "evidence_token_overlap": 0.9,
+    "hit@5": 1.0,
+    "mrr": 1.0,
+    "precision@5": 0.2,
+    "recall@5": 1.0,
+    "token_f1": 0.9,
+    "token_precision": 0.9,
+    "token_recall": 0.9
+  },
+  "note": "Illustrative baseline only. Regenerate it from the same dataset and metric settings before using it as a CI gate."
+}
