@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -21,6 +22,43 @@ def _read_json(path: Path) -> Any:
         raise ValueError(f"Input file not found: {path}") from exc
     except json.JSONDecodeError as exc:
         raise ValueError(f"Invalid JSON in {path}: {exc}") from exc
+
+
+def _read_dataset(path: Path) -> Any:
+    """Read a JSON array or JSONL records, with line-aware JSONL errors."""
+    if path.suffix.lower() != ".jsonl":
+        return _read_json(path)
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except FileNotFoundError as exc:
+        raise ValueError(f"Input file not found: {path}") from exc
+    records: list[dict[str, Any]] = []
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"Invalid JSONL in {path} at line {line_number}: {exc.msg}"
+            ) from exc
+        if not isinstance(record, dict):
+            raise ValueError(
+                f"Invalid JSONL in {path} at line {line_number}: each line must be a JSON object."
+            )
+        records.append(record)
+    return records
+
+
+def _run_metadata(path: Path, mode: str, *, k: int | None = None) -> dict[str, Any]:
+    metadata: dict[str, Any] = {
+        "mode": mode,
+        "dataset_format": "jsonl" if path.suffix.lower() == ".jsonl" else "json",
+        "dataset_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+    if k is not None:
+        metadata["retrieval_k"] = k
+    return metadata
 
 
 def _write_outputs(report: dict[str, Any], out_dir: Path, title: str) -> None:
@@ -52,12 +90,14 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "evaluate":
             if args.k < 1:
                 raise ValueError("--k must be >= 1")
-            report = evaluate_cases(validate_cases(_read_json(args.dataset)), k=args.k)
+            report = evaluate_cases(validate_cases(_read_dataset(args.dataset)), k=args.k)
+            report["run_metadata"] = _run_metadata(args.dataset, "offline_rag_evaluation", k=args.k)
             _write_outputs(report, args.out_dir, "RAG Evaluation Report")
             print(f"Evaluated {report['case_count']} cases; reports written to {args.out_dir}")
             return 0
         if args.command == "safety":
-            report = evaluate_safety_cases(validate_safety_cases(_read_json(args.dataset)))
+            report = evaluate_safety_cases(validate_safety_cases(_read_dataset(args.dataset)))
+            report["run_metadata"] = _run_metadata(args.dataset, "offline_safety_regression")
             _write_outputs(report, args.out_dir, "Safety Regression Report")
             print(f"Safety checks: {report['passed_count']} passed, {report['failed_count']} failed.")
             return 0 if report["failed_count"] == 0 else 1
