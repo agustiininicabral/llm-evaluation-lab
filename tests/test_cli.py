@@ -47,3 +47,19 @@ def test_compare_cli_writes_report_and_returns_failure_on_regression(tmp_path):
     assert main(["compare", str(current), str(baseline), "--out", str(output)]) == 1
     report = json.loads(output.read_text(encoding="utf-8"))
     assert report["regressions"] == ["mrr"]
+
+
+
+def test_missing_dataset_returns_user_facing_error(tmp_path, capsys):
+    missing = tmp_path / "missing.json"
+    result = main(["evaluate", str(missing), "--out-dir", str(tmp_path / "out")])
+    assert result == 2
+    assert "Input file not found" in capsys.readouterr().err
+
+
+def test_invalid_safety_dataset_returns_user_facing_error(tmp_path, capsys):
+    dataset = tmp_path / "safety.json"
+    dataset.write_text(json.dumps([{"id": "bad", "response": "ok", "should_refuse": "yes"}]), encoding="utf-8")
+    result = main(["safety", str(dataset), "--out-dir", str(tmp_path / "out")])
+    assert result == 2
+    assert "should_refuse must be a boolean" in capsys.readouterr().err
