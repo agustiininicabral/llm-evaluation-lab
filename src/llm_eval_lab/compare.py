@@ -19,7 +19,11 @@ def _aggregate_metrics(report: Any, label: str) -> dict[str, float]:
             raise ValueError(f"{label} metric names must be non-empty strings.")
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise ValueError(f"{label} metric '{name}' must be numeric.")
-        if not math.isfinite(value):
+        try:
+            finite = math.isfinite(value)
+        except OverflowError:
+            finite = False
+        if not finite:
             raise ValueError(f"{label} metric '{name}' must be finite.")
         validated[name] = float(value)
     return validated
@@ -29,7 +33,11 @@ def compare_reports(current: dict[str, Any], baseline: dict[str, Any], max_regre
     """Flag higher-is-better metrics that fell by more than max_regression."""
     if isinstance(max_regression, bool) or not isinstance(max_regression, (int, float)):
         raise ValueError("max_regression must be a finite number >= 0")
-    if not math.isfinite(max_regression) or max_regression < 0:
+    try:
+        finite_threshold = math.isfinite(max_regression)
+    except OverflowError:
+        finite_threshold = False
+    if not finite_threshold or max_regression < 0:
         raise ValueError("max_regression must be a finite number >= 0")
     current_metrics = _aggregate_metrics(current, "Current")
     baseline_metrics = _aggregate_metrics(baseline, "Baseline")
