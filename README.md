@@ -18,7 +18,7 @@ Important: lexical and rule-based checks are regression signals, not proof of fa
 Requires Python 3.10+.
 
     python -m venv .venv
-    .venv\\Scripts\\Activate.ps1
+    .venv\Scripts\Activate.ps1
     python -m pip install -e ".[dev]"
     llm-eval evaluate examples/rag_cases.json --out-dir reports
     python -m pytest
