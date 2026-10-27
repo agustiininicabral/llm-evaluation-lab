@@ -72,3 +72,17 @@ def test_safety_ignores_empty_marker_if_evaluated_without_validation():
 def test_safety_rejects_empty_disallowed_pattern():
     with pytest.raises(ValueError, match="Disallowed patterns"):
         evaluate_safety_cases([], disallowed_patterns=["!!!"])
+
+
+
+def test_comparison_rejects_extremely_large_integer_values():
+    with pytest.raises(ValueError, match="finite"):
+        compare_reports(
+            {"aggregate": {"mrr": 10**1000}},
+            {"aggregate": {"mrr": 0.9}},
+        )
+
+
+def test_comparison_rejects_extremely_large_integer_threshold():
+    with pytest.raises(ValueError, match="max_regression"):
+        compare_reports({"aggregate": {}}, {"aggregate": {}}, max_regression=10**1000)
