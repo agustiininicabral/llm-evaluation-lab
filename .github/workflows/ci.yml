@@ -36,3 +36,12 @@ jobs:
         run: |
           llm-eval evaluate examples/rag_cases.json --out-dir /tmp/llm-eval-report
           llm-eval safety examples/safety_cases.json --out-dir /tmp/llm-eval-safety
+      - name: Upload example reports
+        if: always() && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-evaluation-reports
+          path: |
+            /tmp/llm-eval-report/
+            /tmp/llm-eval-safety/
+          if-no-files-found: warn
