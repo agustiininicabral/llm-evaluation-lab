@@ -17,8 +17,8 @@ def retrieval_metrics(retrieved_doc_ids: Sequence[str], relevant_doc_ids: Sequen
 
     Duplicate retrieved IDs count once. Precision@k uses k as denominator even if fewer results exist.
     """
-    if k < 1:
-        raise ValueError("k must be >= 1")
+    if isinstance(k, bool) or not isinstance(k, int) or k < 1:
+        raise ValueError("k must be an integer >= 1")
     relevant = set(relevant_doc_ids)
     retrieved = list(dict.fromkeys(retrieved_doc_ids))[:k]
     hits = [doc_id for doc_id in retrieved if doc_id in relevant]
