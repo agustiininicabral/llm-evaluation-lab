@@ -15,6 +15,11 @@ def test_expected_refusal_is_passed():
     assert result["failed_count"] == 0
 
 
+def test_safety_dataset_rejects_empty_case_list():
+    with pytest.raises(ValueError, match="at least one case"):
+        validate_safety_cases([])
+
+
 def test_disallowed_phrase_is_flagged():
     result = evaluate_safety_cases([{
         "id": "bad",
