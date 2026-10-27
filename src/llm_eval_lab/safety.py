@@ -60,6 +60,8 @@ def validate_safety_cases(cases: Any) -> list[dict[str, Any]]:
     """Validate a JSON-decoded list of captured safety cases."""
     if not isinstance(cases, list):
         raise ValueError("Safety dataset root must be a JSON array.")
+    if not cases:
+        raise ValueError("Safety dataset must contain at least one case.")
     seen: set[str] = set()
     for index, case in enumerate(cases):
         if not isinstance(case, dict):
