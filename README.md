@@ -9,6 +9,7 @@ An offline-first evaluation toolkit for retrieval-augmented generation (RAG) and
 - Transparent lexical evidence-overlap and citation-presence signals.
 - Phrase-based safety regression checks for recorded responses.
 - Baseline comparison gates and JSON/Markdown reports.
+- Provider-neutral adapters for captured generic, OpenAI-compatible, and Anthropic text outputs; no provider SDK or API calls.
 - Pytest, Ruff and GitHub Actions CI, with sample reports published as workflow artifacts.
 
 Important: lexical and rule-based checks are regression signals, not proof of factual correctness or security. Semantic judgment requires human review and/or a separately configured evaluator.
@@ -26,7 +27,7 @@ Requires Python 3.10+.
 
 Run safety fixtures with `llm-eval safety examples/safety_cases.json --out-dir reports`. Compare reports with `llm-eval compare reports/report.json examples/baseline.json --max-regression 0.05`. The bundled baseline is illustrative and may intentionally fail comparison; generate a baseline from a trusted report using the same dataset and settings before treating the exit code as a release gate.
 
-See docs/DATASET_FORMAT.md for the JSON schema. The core makes no network calls and does not invoke a model.
+See docs/DATASET_FORMAT.md for the JSON schema and [docs/ADAPTERS.md](docs/ADAPTERS.md) for recorded-output adapters. The core makes no network calls and does not invoke a model.
 
 ## Layout
 
