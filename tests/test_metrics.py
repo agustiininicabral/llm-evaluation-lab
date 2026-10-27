@@ -17,9 +17,10 @@ def test_retrieval_metrics_uses_first_relevant_rank_and_unique_ids():
     assert result["recall@3"] == pytest.approx(0.5)
 
 
-def test_retrieval_rejects_invalid_k():
-    with pytest.raises(ValueError, match="k must"):
-        retrieval_metrics([], [], k=0)
+@pytest.mark.parametrize("k", [0, -1, True, 1.5, "2"])
+def test_retrieval_rejects_invalid_k(k):
+    with pytest.raises(ValueError, match="k must be an integer"):
+        retrieval_metrics([], [], k=k)
 
 
 def test_answer_metrics_normalizes_punctuation_and_case():

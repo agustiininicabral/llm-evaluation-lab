@@ -35,8 +35,8 @@ def validate_cases(cases: Any) -> list[dict[str, Any]]:
 
 def evaluate_cases(cases: Sequence[Mapping[str, Any]], k: int = 5) -> dict[str, Any]:
     """Evaluate cases and aggregate available numeric metrics by arithmetic mean."""
-    if k < 1:
-        raise ValueError("k must be >= 1")
+    if isinstance(k, bool) or not isinstance(k, int) or k < 1:
+        raise ValueError("k must be an integer >= 1")
     results: list[dict[str, Any]] = []
     metric_values: dict[str, list[float]] = {}
     for case in cases:
