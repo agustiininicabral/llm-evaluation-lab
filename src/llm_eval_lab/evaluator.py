@@ -12,6 +12,8 @@ def validate_cases(cases: Any) -> list[dict[str, Any]]:
     """Validate a JSON-decoded list of evaluation cases."""
     if not isinstance(cases, list):
         raise ValueError("Dataset root must be a JSON array.")
+    if not cases:
+        raise ValueError("Dataset must contain at least one evaluation case.")
     seen: set[str] = set()
     for index, case in enumerate(cases):
         if not isinstance(case, dict):

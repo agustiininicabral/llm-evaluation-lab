@@ -30,3 +30,8 @@ def test_dataset_rejects_wrong_field_type():
 def test_dataset_requires_array():
     with pytest.raises(ValueError, match="JSON array"):
         validate_cases({"id": "x"})
+
+
+def test_dataset_rejects_empty_case_list():
+    with pytest.raises(ValueError, match="at least one evaluation case"):
+        validate_cases([])

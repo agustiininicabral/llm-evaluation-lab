@@ -1,6 +1,6 @@
 # Dataset format
 
-The CLI reads UTF-8 JSON arrays. Each record must be an object with a unique, non-empty string `id`. Optional fields are validated when present.
+The CLI reads UTF-8 JSON arrays. Each dataset must contain at least one record. Every record must be an object with a unique, non-empty string `id`. Optional fields are validated when present. Empty datasets are rejected so a missing benchmark cannot produce a misleading successful report.
 
 ## RAG case fields
 
