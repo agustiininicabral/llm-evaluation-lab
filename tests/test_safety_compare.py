@@ -36,3 +36,21 @@ def test_baseline_comparison_detects_regression_and_missing_metric():
 def test_negative_regression_threshold_is_rejected():
     with pytest.raises(ValueError, match="max_regression"):
         compare_reports({}, {}, max_regression=-0.1)
+
+
+
+def test_comparison_rejects_missing_aggregate_object():
+    with pytest.raises(ValueError, match="aggregate"):
+        compare_reports({}, {"aggregate": {"mrr": 0.9}})
+
+
+@pytest.mark.parametrize("invalid", [True, "0.9", float("nan"), float("inf")])
+def test_comparison_rejects_invalid_metric_values(invalid):
+    with pytest.raises(ValueError, match="numeric|finite"):
+        compare_reports({"aggregate": {"mrr": invalid}}, {"aggregate": {"mrr": 0.9}})
+
+
+@pytest.mark.parametrize("threshold", [-0.1, float("nan"), float("inf"), True])
+def test_comparison_rejects_invalid_thresholds(threshold):
+    with pytest.raises(ValueError, match="max_regression"):
+        compare_reports({"aggregate": {}}, {"aggregate": {}}, max_regression=threshold)
