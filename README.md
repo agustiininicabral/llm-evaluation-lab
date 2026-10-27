@@ -46,3 +46,6 @@ See docs/DATASET_FORMAT.md for the JSON schema. The core makes no network calls 
 - [ ] Optional calibrated semantic judge
 
 MIT License. See LICENSE.
+
+
+JSONL datasets are accepted one record per line. Evaluation and safety reports include the input dataset SHA-256 fingerprint and evaluation settings for reproducibility. The core remains offline and does not invoke a model.

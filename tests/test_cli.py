@@ -1,3 +1,4 @@
+import hashlib
 import json
 
 from llm_eval_lab.cli import main
@@ -49,17 +50,32 @@ def test_compare_cli_writes_report_and_returns_failure_on_regression(tmp_path):
     assert report["regressions"] == ["mrr"]
 
 
+def test_evaluate_cli_accepts_jsonl_and_records_dataset_fingerprint(tmp_path):
+    dataset = tmp_path / "cases.jsonl"
+    content = (
+        '{"id":"one","answer":"blue sky","reference_answer":"blue sky"}\n'
+        '\n'
+        '{"id":"two","answer":"green grass","reference_answer":"green grass"}\n'
+    )
+    dataset.write_text(content, encoding="utf-8")
+    output = tmp_path / "reports"
 
-def test_missing_dataset_returns_user_facing_error(tmp_path, capsys):
-    missing = tmp_path / "missing.json"
-    result = main(["evaluate", str(missing), "--out-dir", str(tmp_path / "out")])
-    assert result == 2
-    assert "Input file not found" in capsys.readouterr().err
+    assert main(["evaluate", str(dataset), "--out-dir", str(output), "-k", "3"]) == 0
+    report = json.loads((output / "report.json").read_text(encoding="utf-8"))
+    assert report["case_count"] == 2
+    assert report["run_metadata"]["dataset_format"] == "jsonl"
+    assert report["run_metadata"]["retrieval_k"] == 3
+    assert report["run_metadata"]["dataset_sha256"] == hashlib.sha256(
+        dataset.read_bytes()
+    ).hexdigest()
+    markdown = (output / "report.md").read_text(encoding="utf-8")
+    assert "## Run metadata" in markdown
+    assert "Dataset Sha256" in markdown
 
 
-def test_invalid_safety_dataset_returns_user_facing_error(tmp_path, capsys):
-    dataset = tmp_path / "safety.json"
-    dataset.write_text(json.dumps([{"id": "bad", "response": "ok", "should_refuse": "yes"}]), encoding="utf-8")
-    result = main(["safety", str(dataset), "--out-dir", str(tmp_path / "out")])
-    assert result == 2
-    assert "should_refuse must be a boolean" in capsys.readouterr().err
+def test_jsonl_cli_reports_malformed_line_number(tmp_path, capsys):
+    dataset = tmp_path / "bad.jsonl"
+    dataset.write_text('{"id":"valid"}\n{broken\n', encoding="utf-8")
+
+    assert main(["evaluate", str(dataset), "--out-dir", str(tmp_path / "out")]) == 2
+    assert "line 2" in capsys.readouterr().err

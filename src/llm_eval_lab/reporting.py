@@ -15,6 +15,12 @@ def write_json_report(report: dict[str, Any], destination: Path) -> None:
 def write_markdown_report(report: dict[str, Any], destination: Path, title: str) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     lines = [f"# {title}", "", f"- Cases: {report.get('case_count', 0)}"]
+    metadata = report.get("run_metadata")
+    if isinstance(metadata, dict):
+        lines.extend(["", "## Run metadata", ""])
+        for key in ("mode", "dataset_format", "dataset_sha256", "retrieval_k"):
+            if key in metadata:
+                lines.append(f"- {key.replace('_', ' ').title()}: **{metadata[key]}**")
     if "passed_count" in report:
         lines.extend([f"- Passed: {report['passed_count']}", f"- Failed: {report['failed_count']}"])
     aggregate = report.get("aggregate")
