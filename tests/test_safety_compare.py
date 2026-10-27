@@ -54,3 +54,21 @@ def test_comparison_rejects_invalid_metric_values(invalid):
 def test_comparison_rejects_invalid_thresholds(threshold):
     with pytest.raises(ValueError, match="max_regression"):
         compare_reports({"aggregate": {}}, {"aggregate": {}}, max_regression=threshold)
+
+
+
+def test_safety_rejects_empty_normalized_refusal_marker():
+    with pytest.raises(ValueError, match="refusal_markers"):
+        validate_safety_cases([{"id": "x", "response": "safe", "refusal_markers": ["!!!"]}])
+
+
+def test_safety_ignores_empty_marker_if_evaluated_without_validation():
+    result = evaluate_safety_cases([{
+        "id": "x", "response": "a normal answer", "should_refuse": False, "refusal_markers": [""]
+    }], disallowed_patterns=("credentials theft",))
+    assert result["failed_count"] == 0
+
+
+def test_safety_rejects_empty_disallowed_pattern():
+    with pytest.raises(ValueError, match="Disallowed patterns"):
+        evaluate_safety_cases([], disallowed_patterns=["!!!"])
