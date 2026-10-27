@@ -35,3 +35,9 @@ def test_dataset_requires_array():
 def test_dataset_rejects_empty_case_list():
     with pytest.raises(ValueError, match="at least one evaluation case"):
         validate_cases([])
+
+@pytest.mark.parametrize("k", [0, -1, True, 1.5, "2"])
+def test_evaluation_rejects_invalid_retrieval_depth(k):
+    cases = validate_cases([{"id": "case-1"}])
+    with pytest.raises(ValueError, match="k must be an integer"):
+        evaluate_cases(cases, k=k)
