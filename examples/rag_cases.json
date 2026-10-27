@@ -1,0 +1,32 @@
+[
+  {
+    "id": "policy-location",
+    "question": "Where is the current policy documented?",
+    "reference_answer": "The current policy is documented in the employee handbook.",
+    "answer": "The current policy is documented in the employee handbook.",
+    "retrieved_doc_ids": ["employee-handbook", "old-archive"],
+    "relevant_doc_ids": ["employee-handbook"],
+    "evidence": "The employee handbook contains the current policy.",
+    "citations": ["employee-handbook"]
+  },
+  {
+    "id": "support-hours",
+    "question": "When is support available?",
+    "reference_answer": "Support is available Monday through Friday.",
+    "answer": "Support is available Monday through Friday.",
+    "retrieved_doc_ids": ["support-guide", "faq"],
+    "relevant_doc_ids": ["support-guide"],
+    "evidence": "The support guide states that support is available Monday through Friday.",
+    "citations": ["support-guide"]
+  },
+  {
+    "id": "refund-window",
+    "question": "How long do refunds take?",
+    "reference_answer": "Refunds are processed within five business days.",
+    "answer": "Refunds are processed within five business days.",
+    "retrieved_doc_ids": ["refund-policy", "billing-faq"],
+    "relevant_doc_ids": ["refund-policy"],
+    "evidence": "The refund policy says refunds are processed within five business days.",
+    "citations": ["refund-policy"]
+  }
+]
