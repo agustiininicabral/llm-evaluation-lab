@@ -28,7 +28,10 @@ jobs:
         run: python -m pip install -e ".[dev]"
       - name: Run tests
         run: python -m pytest
-      - name: Check formatting and lint
+      - name: Check formatting
+        if: matrix.python-version == '3.12'
+        run: ruff format --check .
+      - name: Check lint
         if: matrix.python-version == '3.12'
         run: ruff check .
       - name: Smoke-test CLI
