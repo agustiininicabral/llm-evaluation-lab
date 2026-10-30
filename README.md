@@ -23,6 +23,7 @@ Requires Python 3.10+.
     python -m pip install -e ".[dev]"
     llm-eval evaluate examples/rag_cases.json --out-dir reports
     python -m pytest
+    ruff format --check .
     ruff check .
 
 Run safety fixtures with `llm-eval safety examples/safety_cases.json --out-dir reports`. Compare reports with `llm-eval compare reports/report.json examples/baseline.json --max-regression 0.05`. The bundled baseline is illustrative and may intentionally fail comparison; generate a baseline from a trusted report using the same dataset and settings before treating the exit code as a release gate.
@@ -43,10 +44,10 @@ See docs/DATASET_FORMAT.md for the JSON schema and [docs/ADAPTERS.md](docs/ADAPT
 - [x] Safety regression fixtures
 - [x] Baseline regression gate
 - [x] CI and tests
-- [ ] Optional adapters for local and hosted model outputs
+- [x] Adapters for recorded generic, OpenAI-compatible, and Anthropic outputs
+- [ ] Optional live provider integrations
 - [ ] Optional calibrated semantic judge
 
 MIT License. See LICENSE.
-
 
 JSONL datasets are accepted one record per line. Evaluation and safety reports include the input dataset SHA-256 fingerprint and evaluation settings for reproducibility. The core remains offline and does not invoke a model.
